@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('clinic_bookings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('clinic_id');
+            $table->unsignedBigInteger('slot_id');
             $table->string('user_phone_no'); // storing user phone number
+            $table->string('reference_no')->unique();
             $table->date('booking_date');
-            $table->time('booking_time');
             $table->boolean('is_confirmed')->default(false);
             $table->timestamps();
 
             // foreign key constraint
-            $table->foreign('clinic_id')->references('id')->on('clinics')->onDelete('cascade');
+            $table->foreign('slot_id')->references('id')->on('clinic_timeslots')->onDelete('cascade');
         });
     }
 

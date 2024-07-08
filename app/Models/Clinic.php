@@ -25,4 +25,9 @@ class Clinic extends Model
             'working_hours' => 'array',
         ];
     }
+
+    public function timeslots ()
+    {
+        return $this->hasMany(ClinicTimeslot::class);
+    }
 }
