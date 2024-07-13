@@ -42,15 +42,22 @@ class ClinicController extends Controller
             ->whereHas('timeslot', function ($query) use ($request) {
                 $query->where('clinic_id', $request->clinic_id);
             })
-            ->where('booking_date', $request->date)
+            ->when($request->filled('phone_no'), function ($query) use ($request) {
+                $query->where('user_phone_no', $request->phone_no);
+            })
+            ->when($request->filled('date'), function ($query) use ($request) {
+                $query->where('booking_date', $request->date);
+            })
+            
             ->get();
 
-        if ($bookings) {
+        if ($bookings->isNotEmpty()) {
             return response()->json($bookings, 200);
         }
 
         return response()->json("No available bookings", 200);
     }
+
 
     public function availabilityByMonth(Request $request)
     {
@@ -108,6 +115,9 @@ class ClinicController extends Controller
             'user_phone_no' => $request->user_phone_no,
             'booking_date' => $request->booking_date,
             'is_confirmed' => 1,
+            'pet_name' => $request->pet_name,
+            'pet_gender' => $request->pet_gender,
+            'pet_age' => $request->pet_age,
         ]);
 
         return response()->json($booking, 201);

@@ -17,6 +17,10 @@ class ClinicBooking extends Model
         'reference_no',
         'booking_date',
         'is_confirmed',
+        'pet_name',
+        'pet_gender',
+        'pet_age',
+
     ];
 
     public static function boot()

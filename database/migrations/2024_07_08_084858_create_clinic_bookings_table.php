@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('reference_no')->unique();
             $table->date('booking_date');
             $table->boolean('is_confirmed')->default(false);
+            $table->string('pet_name')->nullable();
+            $table->string('pet_gender')->nullable();
+            $table->string('pet_age')->nullable();
             $table->timestamps();
 
             // foreign key constraint
