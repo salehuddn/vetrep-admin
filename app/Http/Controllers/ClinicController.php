@@ -181,4 +181,14 @@ class ClinicController extends Controller
         ->get();
         return response()->json($bookings, 200);
     }
+
+    public function getBookingsByPhoneNumber($phoneNumber)
+    {
+        // Eager load the 'timeslot' relationship
+        $bookings = ClinicBooking::where('user_phone_no', $phoneNumber)
+                                  ->with('timeslot')  // Use the correct relationship method name
+                                  ->get();
+
+        return response()->json($bookings);
+    }
 }

@@ -34,4 +34,8 @@ Route::prefix('v1/public')->group(function () {
     Route::post('clinics/book', [ClinicController::class, 'book']);
 
     Route::get('clinics', [ClinicController::class, 'allClinics']);
+    Route::get('bookings/{clinicId}', [ClinicController::class, 'showBookings']);
+    Route::put('bookings/update/{booking}', [ClinicController::class, 'updateBooking']);
+
+    Route::get('/clinics/view-bookings/{phoneNumber}', [ClinicController::class, 'getBookingsByPhoneNumber']);
 });
