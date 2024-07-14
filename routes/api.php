@@ -16,7 +16,7 @@ Route::middleware(['auth:sanctum'])->prefix('v1/secured')->group(function () {
 
     Route::put('admin/bookings/{booking}', [ClinicController::class, 'updateBooking']);
     Route::get('admin/all-bookings', [ClinicController::class, 'allBooking']);
-    Route::get('admin/bookings/{id}', [ClinicController::class, 'showBookings']);
+    Route::get('admin/bookings/{clinicId}', [ClinicController::class, 'showBookings']);
 
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('admin/all-clinics', [ClinicController::class, 'allClinics']);
@@ -30,7 +30,7 @@ Route::prefix('v1/public')->group(function () {
     Route::post('deleteUser', [AuthController::class, 'deleteUser']);
 
     Route::get('clinics/view-bookings', [ClinicController::class, 'viewBookingByDate']);
-    Route::get('clinics/availability', [ClinicController::class, 'availabilityByMonth']);
+    Route::get('clinics/availability', [ClinicController::class, 'clinicAvailability']);
     Route::post('clinics/book', [ClinicController::class, 'book']);
 
     Route::get('clinics', [ClinicController::class, 'allClinics']);

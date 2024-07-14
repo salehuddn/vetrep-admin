@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('clinic_bookings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('clinic_id')->nullable();
             $table->unsignedBigInteger('slot_id');
             $table->string('user_phone_no'); // storing user phone number
             $table->string('reference_no')->unique();

@@ -11,7 +11,6 @@ class ClinicBooking extends Model
     use HasFactory;
 
     protected $fillable = [
-        'clinic_id',
         'slot_id',
         'user_phone_no',
         'reference_no',
@@ -30,11 +29,6 @@ class ClinicBooking extends Model
         static::creating(function ($clinicBooking) {
             $clinicBooking->reference_no = Str::random(20);
         });
-    }
-
-    public function clinic()
-    {
-        return $this->belongsTo(Clinic::class);
     }
 
     public function timeslot()
