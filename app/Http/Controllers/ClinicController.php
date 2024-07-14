@@ -110,7 +110,14 @@ class ClinicController extends Controller
             return response()->json(['message' => 'Time slot already booked'], 409);
         }
 
+        // Retrieve the timeslot to get the clinic_id
+        $timeslot = ClinicTimeslot::find($request->slot_id);
+        if (!$timeslot) {
+            return response()->json(['message' => 'Invalid slot ID'], 400);
+        }
+
         $booking = ClinicBooking::create([
+            'clinic_id' => $timeslot->clinic_id,
             'slot_id' => $request->slot_id,
             'user_phone_no' => $request->user_phone_no,
             'booking_date' => $request->booking_date,
@@ -123,9 +130,35 @@ class ClinicController extends Controller
         return response()->json($booking, 201);
     }
 
+
     public function updateBooking(Request $request, ClinicBooking $booking)
     {
         $booking->update($request->all());
         return response()->json($booking, 200);
+    }
+
+    public function allClinics(Request $request){
+
+        $clinics = Clinic::all();
+        return response()->json($clinics, 200);
+
+    }
+
+    public function show($id)
+    {
+        $clinic = Clinic::findOrFail($id);
+        return response()->json($clinic, 200);
+    }
+
+    public function allBooking(Request $request)
+    {
+        $bookings = ClinicBooking::all();
+        return response()->json($bookings, 200);
+    }
+
+    public function showBookings($id)
+    {
+        $bookings = ClinicBooking::where('clinic_id', $id)->get();
+        return response()->json($bookings, 200);
     }
 }
