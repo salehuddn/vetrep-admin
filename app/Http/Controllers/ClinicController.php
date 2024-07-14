@@ -176,7 +176,9 @@ class ClinicController extends Controller
     {
         $bookings = ClinicBooking::whereHas('timeslot', function ($query) use ($id) {
             $query->where('clinic_id', $id);
-        })->get();
+        })
+        ->with('timeslot')
+        ->get();
         return response()->json($bookings, 200);
     }
 }
