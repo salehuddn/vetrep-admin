@@ -59,25 +59,42 @@ class ClinicController extends Controller
     }
 
 
-    public function availabilityByMonth(Request $request)
+    public function clinicAvailability(Request $request)
     {
         $clinic_id = $request->clinic_id;
         $year = $request->year;
         $month = $request->month;
+        $day = $request->day;
+
         $clinic = Clinic::findOrFail($clinic_id);
 
-        $bookings = ClinicBooking::whereHas('timeslot', function ($query) use ($clinic_id) {
+        // Query bookings based on provided date parameters
+        $bookingsQuery = ClinicBooking::whereHas('timeslot', function ($query) use ($clinic_id) {
             $query->where('clinic_id', $clinic_id);
-        })->whereYear('booking_date', $year)
-            ->whereMonth('booking_date', $month)
-            ->get();
+        })
+        ->whereYear('booking_date', $year)
+        ->whereMonth('booking_date', $month);
 
+        if ($request->filled('day')) {
+            $bookingsQuery->whereDay('booking_date', $day);
+        }
+
+        $bookings = $bookingsQuery->get();
+
+        // Generate availability for the specified day or month
         $availability = [];
-        for ($day = 1; $day <= 31; $day++) {
+        if ($request->filled('day')) {
             $date = sprintf('%s-%02d-%02d', $year, $month, $day);
             $dailyBookings = $bookings->where('booking_date', $date);
             $times = $this->generateTimeSlots($clinic_id, $dailyBookings);
             $availability[$date] = $times;
+        } else {
+            for ($day = 1; $day <= 31; $day++) {
+                $date = sprintf('%s-%02d-%02d', $year, $month, $day);
+                $dailyBookings = $bookings->where('booking_date', $date);
+                $times = $this->generateTimeSlots($clinic_id, $dailyBookings);
+                $availability[$date] = $times;
+            }
         }
 
         return response()->json($availability, 200);
@@ -117,7 +134,6 @@ class ClinicController extends Controller
         }
 
         $booking = ClinicBooking::create([
-            'clinic_id' => $timeslot->clinic_id,
             'slot_id' => $request->slot_id,
             'user_phone_no' => $request->user_phone_no,
             'booking_date' => $request->booking_date,
@@ -158,7 +174,9 @@ class ClinicController extends Controller
 
     public function showBookings($id)
     {
-        $bookings = ClinicBooking::where('clinic_id', $id)->get();
+        $bookings = ClinicBooking::whereHas('timeslot', function ($query) use ($id) {
+            $query->where('clinic_id', $id);
+        })->get();
         return response()->json($bookings, 200);
     }
 }
